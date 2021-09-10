@@ -4,14 +4,19 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 @Path("/books")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class BookResource {
 
     private Set<Book> books = Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
@@ -27,9 +32,9 @@ public class BookResource {
         books.add(new Book("Refactoring: Improving the Design of Existing Code (2nd Edition) ", "Martin Fowler",
                 " 978-0134757599", "‎Addison-Wesley Professional"));
         books.add(new Book("Working Effectively with Legacy Code", "Michael Fethers", " 978-0131177055", "‎Pearson"));
-        books.add(new Book("Test Driven Development: By Example", "Ken Beck", " 978-0321146533",
+        books.add(new Book("Test Driven Development: By Example", "Kent Beck", " 978-0321146533",
                 "‎ Addison-Wesley Professional"));
-        books.add(new Book("Extreme Programming Explained: Embrace Change, 2nd Edition", "Ken Beck", "978-0321278654",
+        books.add(new Book("Extreme Programming Explained: Embrace Change, 2nd Edition", "Kent Beck", "978-0321278654",
                 "‎Addison-Wesley Professional"));
         books.add(new Book("Patterns of Enterprise Application Architecture", "Martin Fowler", "978-0321127426",
                 "‎Addison-Wesley Professional"));
@@ -38,28 +43,19 @@ public class BookResource {
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello RESTEasy";
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Set<Book> list() {
-        return books;
+    public Response list() {
+        return Response.ok(books).build();
     }
 
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public Set<Book> add(Book book) {
+    public Response add(Book book) {
         books.add(book);
-        return books;
+        return Response.status(Status.ACCEPTED).entity(books).build();
     }
 
     @DELETE
-    @Produces(MediaType.APPLICATION_JSON)
-    public Set<Book> delete(Book book) {
+    public Response delete(Book book) {
         books.removeIf(existingBook -> existingBook.title.contentEquals(book.title));
-        return books;
+        return Response.ok(books).build();
     }
 }
