@@ -1,5 +1,8 @@
 package id.rakhmad.demo.rest;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class Book {
 
     public String title;
